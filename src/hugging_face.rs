@@ -1,14 +1,14 @@
 use anyhow::Result;
-use reqwest::{header::HeaderMap, Client as HttpCLient};
+use reqwest::{header::HeaderMap, Client};
 use std::sync::Arc;
 
 const API_URL: &str = "https://huggingface.co/api";
 
-pub struct Client {
-    pub http_client: Arc<HttpCLient>,
+pub struct HuggingFace {
+    pub client: Arc<Client>,
 }
 
-impl Client {
+impl HuggingFace {
     pub fn new() -> Result<Self> {
         let mut headers = HeaderMap::new();
         headers.insert(
@@ -17,7 +17,7 @@ impl Client {
                 .try_into()?,
         );
         Ok(Self {
-            http_client: Arc::new(HttpCLient::builder().default_headers(headers).build()?),
+            client: Arc::new(Client::builder().default_headers(headers).build()?),
         })
     }
 
@@ -28,7 +28,7 @@ impl Client {
         split: &str,
     ) -> Result<Vec<String>> {
         let url = format!("{API_URL}/datasets/{username}/{dataset_name}/parquet/{split}");
-        let response = self.http_client.get(url).send().await?;
+        let response = self.client.get(url).send().await?;
         Ok(response.json().await?)
     }
 }
