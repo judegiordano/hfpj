@@ -1,0 +1,13 @@
+[package]
+name = "hugging_face_dataset_downloader"
+version = "0.1.0"
+edition = "2021"
+alias = "hfdd"
+
+[dependencies]
+anyhow = "1.0.86"
+clap = { version = "4.5.16", features = ["derive"] }
+parquet = { version = "53.0.0", features = ["async", "json", "serde", "tokio"] }
+reqwest = { version = "0.12.7", features = ["stream", "json"] }
+tokio = { version = "1.40.0", features = ["macros", "rt-multi-thread"] }
+tracing = "0.1.40"
