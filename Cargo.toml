@@ -1,8 +1,8 @@
 [package]
-name = "hugging_face_dataset_downloader"
+name = "hfpj"
 version = "0.1.0"
 edition = "2021"
-alias = "hfdd"
+alias = "hfpj"
 
 [profile.release]
 debug = 0

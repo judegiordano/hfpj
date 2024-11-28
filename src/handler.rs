@@ -76,7 +76,7 @@ pub async fn run() -> Result<()> {
     future::try_join_all(handlers).await?;
     let concat_data = received_data.concat();
     println!("-> total items received {}", concat_data.len());
-    println!("-> writing to {file_name}.json");
+    println!("-> writing to '{file_name}.json'...");
     flush::to_local_file(&concat_data, &file_name)?;
     println!("-> operation complete in {:?}", start.elapsed());
     println!("-> cleaning up remaining resources...");
