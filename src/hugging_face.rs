@@ -39,6 +39,7 @@ impl HuggingFace {
     pub async fn get_parquets(&self, username: &str, dataset_name: &str) -> Result<Vec<String>> {
         let default_split = self.get_split_names(username, dataset_name).await?;
         let split = format!("{}/{}", default_split.config, default_split.split);
+        println!("-> training off of {:?} split files", split);
         let url = format!("{API_URL}/datasets/{username}/{dataset_name}/parquet/{split}");
         let response = self.client.get(url).send().await?;
         Ok(response.json().await?)
