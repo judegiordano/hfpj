@@ -4,6 +4,14 @@ version = "0.1.0"
 edition = "2021"
 alias = "hfdd"
 
+[profile.release]
+debug = 0
+incremental = false
+panic = "abort"
+opt-level = 3       # 0-3
+strip = 'symbols'   # strip symbols from binary
+lto = true          # enable link time optimization
+
 [dependencies]
 anyhow = "1.0.86"
 clap = { version = "4.5.16", features = ["derive"] }

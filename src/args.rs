@@ -9,9 +9,6 @@ pub struct Arguments {
     /// HuggingFace dataset name
     #[arg(short, long)]
     pub dataset: String,
-    /// HuggingFace dataset split
-    #[arg(short, long)]
-    pub split: String,
     /// Output name of data json file
     #[arg(short, long)]
     pub out: Option<String>,

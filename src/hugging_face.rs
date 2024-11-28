@@ -1,11 +1,26 @@
 use anyhow::Result;
 use reqwest::{header::HeaderMap, Client};
+use serde::Deserialize;
 use std::sync::Arc;
 
 const API_URL: &str = "https://huggingface.co/api";
+const DATASETS_API_URL: &str = "https://datasets-server.huggingface.co";
 
 pub struct HuggingFace {
     pub client: Arc<Client>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct SplitDataSet {
+    #[allow(unused)]
+    pub dataset: String,
+    pub config: String,
+    pub split: String,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct SplitResponse {
+    pub splits: Vec<SplitDataSet>,
 }
 
 impl HuggingFace {
@@ -21,14 +36,22 @@ impl HuggingFace {
         })
     }
 
-    pub async fn get_parquet_links(
-        &self,
-        username: &str,
-        dataset_name: &str,
-        split: &str,
-    ) -> Result<Vec<String>> {
+    pub async fn get_parquets(&self, username: &str, dataset_name: &str) -> Result<Vec<String>> {
+        let default_split = self.get_split_names(username, dataset_name).await?;
+        let split = format!("{}/{}", default_split.config, default_split.split);
         let url = format!("{API_URL}/datasets/{username}/{dataset_name}/parquet/{split}");
         let response = self.client.get(url).send().await?;
         Ok(response.json().await?)
+    }
+
+    pub async fn get_split_names(
+        &self,
+        username: &str,
+        dataset_name: &str,
+    ) -> Result<SplitDataSet> {
+        let url = format!("{DATASETS_API_URL}/splits?dataset={username}/{dataset_name}");
+        let response = self.client.get(url).send().await?;
+        let SplitResponse { splits } = response.json().await?;
+        Ok(splits.first().unwrap().to_owned())
     }
 }
